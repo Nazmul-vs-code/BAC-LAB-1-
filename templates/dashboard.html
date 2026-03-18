@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Dashboard 🏠</title>
+    <style>
+        body { background:#1e293b; color:white; font-family:Arial; text-align:center; }
+        .card { background: rgba(255,255,255,0.05); padding:20px; border-radius:15px; width:400px; margin:20px auto; }
+        textarea { width:90%; padding:10px; border-radius:8px; }
+        button { padding:10px; margin:5px; border-radius:8px; border:none; background:#22c55e; color:white; }
+    </style>
+</head>
+<body>
+
+<h2>Dashboard 🏠</h2>
+<h3>nope😾🐈 : Welcome to my first lab</h3>
+<div class="card">
+    <h3>User Info</h3>
+    <p id="info"></p>
+</div>
+
+<div class="card">
+    <h3>Notes 📝</h3>
+    <textarea id="note"></textarea><br>
+    <button onclick="addNote()">Add</button>
+    <ul id="list"></ul>
+</div>
+
+<button onclick="goAdmin()">Admin Panel 🚀</button>
+<button onclick="logout()">Logout</button>
+
+<script>
+let token = localStorage.getItem("token");
+if(!token) location.href="/";
+
+fetch("/api/me",{headers:{"Authorization":"Bearer "+token}})
+.then(r=>r.json()).then(d=>{
+    info.innerText = d.username + " | Role: " + d.role;
+});
+
+// notes
+let notes = JSON.parse(localStorage.getItem("notes")||"[]");
+function render(){ list.innerHTML=""; notes.forEach((n,i)=>{ list.innerHTML+=`<li>${n} <button onclick="del(${i})">❌</button></li>`}); }
+function addNote(){ if(note.value){ notes.push(note.value); localStorage.setItem("notes",JSON.stringify(notes)); note.value=""; render();}}
+function del(i){ notes.splice(i,1); localStorage.setItem("notes",JSON.stringify(notes)); render();}
+render();
+
+function goAdmin(){ location.href="/admin"; }
+function logout(){ localStorage.removeItem("token"); location.href="/"; }
+</script>
+
+</body>
+</html>

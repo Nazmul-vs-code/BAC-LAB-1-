@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Login 🔐</title>
+    <style>
+        body { background: linear-gradient(135deg,#0f172a,#1e293b); color:white; font-family:Arial; text-align:center; }
+        .card { margin-top:80px; background: rgba(255,255,255,0.05); padding:30px; border-radius:20px; width:380px; margin:auto; box-shadow:0 0 20px rgba(0,255,0,0.3);}
+        input { width:85%; padding:12px; margin:10px; border-radius:10px; border:none; }
+        button { padding:12px 20px; border-radius:10px; border:none; background:#22c55e; color:white; cursor:pointer; font-weight:bold; }
+    </style>
+</head>
+<body>
+
+<div class="card">
+    <h2>Login 🔐</h2>
+
+    <input id="username" value="nope"><br>
+    <input id="password" type="password" value="nope123"><br>
+
+    <button onclick="login()">Login</button>
+
+    <p style="margin-top:10px;color:#aaa;">
+        Default: nope / nope123 (user)<br>
+        Try escalating to admin 😈
+    </p>
+</div>
+
+<script>
+function login(){
+    fetch("/api/login", {
+        method:"POST",
+        headers:{"Content-Type":"application/json"},
+        body: JSON.stringify({
+            username: username.value,
+            password: password.value
+        })
+    })
+    .then(res=>res.json())
+    .then(data=>{
+        if(data.token){
+            localStorage.setItem("token", data.token);
+            window.location.href="/dashboard";
+        } else {
+            alert("Login failed ❌");
+        }
+    });
+}
+</script>
+
+</body>
+</html>
